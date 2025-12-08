@@ -1,3 +1,4 @@
+
 import SwiftUI
 import Speech
 import AVFoundation
@@ -9,43 +10,68 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 16) {
-                // ★ ここがタイトル（中央寄せ）
+                // タイトル
                 Text("音声メモおこしくん")
                     .font(.largeTitle)
                     .bold()
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.top, 24)
                 
-                Text("元の日本語")
-                    .font(.headline)
                 
-                // 以下はそのまま
+                
+                
+                
+                
+                // メモ欄（文字起こし結果）
+                // VStack の中の ScrollView をこの形に置き換え
+
                 ScrollView {
-                    Text(viewModel.recognizedText.isEmpty ? "ここに文字起こし結果が表示されます" : viewModel.recognizedText)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
-                        .background(Color(.secondarySystemBackground))
-                        .cornerRadius(8)
+                    Text(
+                        viewModel.recognizedText.isEmpty
+                        ? "ここに文字起こし結果が表示されます"
+                        : viewModel.recognizedText
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color(.secondarySystemBackground))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color(.separator), lineWidth: 0.5) // うっすら枠
+                    )
+                    .lineSpacing(6)
+                    .foregroundColor(
+                        viewModel.recognizedText.isEmpty ? .secondary : .primary
+                    )
                 }
-                .frame(height: 200)
+                .frame(minHeight: 200)   // ← ScrollView に対して付ける
+                .padding(.top, 8)
+
                 
-                if !viewModel.recognizedText.isEmpty {
+                // 🔽 ここから下を「下寄せゾーン」にしたいので Spacer を入れる
+                Spacer()
+                
+                // 録音していない & テキストがあるときだけ表示
+                if !viewModel.recognizedText.isEmpty && !viewModel.isRecording {
                     HStack {
                         Button("クリア") {
                             viewModel.clearText()
                         }
-                        
+
                         Button("コピー") {
                             UIPasteboard.general.string = viewModel.recognizedText
                         }
-                        
+
                         ShareLink(item: viewModel.recognizedText) {
                             Label("共有", systemImage: "square.and.arrow.up")
                         }
                     }
                     .buttonStyle(.bordered)
                 }
-                
+
+                // 録音ボタン（常に一番下）
                 Button(action: {
                     viewModel.toggleRecording()
                 }) {
@@ -56,17 +82,15 @@ struct ContentView: View {
                         .foregroundColor(.white)
                         .cornerRadius(8)
                 }
-                
-                Spacer()
             }
             .padding()
-            // .navigationTitle(...) は削除してOK
             .onAppear {
                 viewModel.requestAuthorization()
             }
         }
     }
 }
+
 
 
 final class SpeechViewModel: NSObject, ObservableObject {
@@ -77,6 +101,9 @@ final class SpeechViewModel: NSObject, ObservableObject {
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "ja-JP"))
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
+    
+    
+    
     
     func requestAuthorization() {
         SFSpeechRecognizer.requestAuthorization { status in
