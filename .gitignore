@@ -1,0 +1,21 @@
+# Xcode
+DerivedData/
+build/
+*.xcuserdata/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# Provisioning / Certificates
+*.p12
+*.mobileprovision
+*.cer
+*.p8
+*.key
+*.env
+
+# Swift Package Manager
+.swiftpm/
+Packages/
+
