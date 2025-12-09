@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		929B2FF42EE847F000DD3B3E /* SpeechViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 929B2FF32EE847F000DD3B3E /* SpeechViewModel.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		929B2F8E2EE30AED00DD3B3E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		929B2F802EE30AEB00DD3B3E /* VoiceTranslateMVP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoiceTranslateMVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		929B2F8D2EE30AED00DD3B3E /* VoiceTranslateMVPTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceTranslateMVPTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		929B2F972EE30AED00DD3B3E /* VoiceTranslateMVPUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceTranslateMVPUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		929B2FF32EE847F000DD3B3E /* SpeechViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -88,6 +93,7 @@
 		929B2F772EE30AEB00DD3B3E = {
 			isa = PBXGroup;
 			children = (
+				929B2FF12EE8479C00DD3B3E /* ViewModels */,
 				929B2F822EE30AEB00DD3B3E /* VoiceTranslateMVP */,
 				929B2F902EE30AED00DD3B3E /* VoiceTranslateMVPTests */,
 				929B2F9A2EE30AED00DD3B3E /* VoiceTranslateMVPUITests */,
@@ -103,6 +109,14 @@
 				929B2F972EE30AED00DD3B3E /* VoiceTranslateMVPUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		929B2FF12EE8479C00DD3B3E /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				929B2FF32EE847F000DD3B3E /* SpeechViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -249,6 +263,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				929B2FF42EE847F000DD3B3E /* SpeechViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
