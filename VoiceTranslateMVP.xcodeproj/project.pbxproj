@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		929B2FF42EE847F000DD3B3E /* SpeechViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 929B2FF32EE847F000DD3B3E /* SpeechViewModel.swift */; };
+		929B2FF62EE85ED100DD3B3E /* RecordingWaveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 929B2FF52EE85ED100DD3B3E /* RecordingWaveView.swift */; };
+		929B2FFE2EE86C3F00DD3B3E /* CustomDictionaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 929B2FFD2EE86C3F00DD3B3E /* CustomDictionaryView.swift */; };
+		929B30002EE873A300DD3B3E /* ThemeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 929B2FFF2EE873A300DD3B3E /* ThemeSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +35,9 @@
 		929B2F8D2EE30AED00DD3B3E /* VoiceTranslateMVPTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceTranslateMVPTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		929B2F972EE30AED00DD3B3E /* VoiceTranslateMVPUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceTranslateMVPUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		929B2FF32EE847F000DD3B3E /* SpeechViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechViewModel.swift; sourceTree = "<group>"; };
+		929B2FF52EE85ED100DD3B3E /* RecordingWaveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingWaveView.swift; sourceTree = "<group>"; };
+		929B2FFD2EE86C3F00DD3B3E /* CustomDictionaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDictionaryView.swift; sourceTree = "<group>"; };
+		929B2FFF2EE873A300DD3B3E /* ThemeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -93,6 +99,9 @@
 		929B2F772EE30AEB00DD3B3E = {
 			isa = PBXGroup;
 			children = (
+				929B2FFF2EE873A300DD3B3E /* ThemeSettingsView.swift */,
+				929B2FFD2EE86C3F00DD3B3E /* CustomDictionaryView.swift */,
+				929B2FF52EE85ED100DD3B3E /* RecordingWaveView.swift */,
 				929B2FF12EE8479C00DD3B3E /* ViewModels */,
 				929B2F822EE30AEB00DD3B3E /* VoiceTranslateMVP */,
 				929B2F902EE30AED00DD3B3E /* VoiceTranslateMVPTests */,
@@ -263,7 +272,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				929B30002EE873A300DD3B3E /* ThemeSettingsView.swift in Sources */,
+				929B2FF62EE85ED100DD3B3E /* RecordingWaveView.swift in Sources */,
 				929B2FF42EE847F000DD3B3E /* SpeechViewModel.swift in Sources */,
+				929B2FFE2EE86C3F00DD3B3E /* CustomDictionaryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -424,7 +436,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = NXC6RWLAXQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -443,7 +455,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.koyasolo.VoiceMemoOkoshiKun;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -462,7 +474,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = NXC6RWLAXQ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -481,7 +493,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.koyasolo.VoiceMemoOkoshiKun;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

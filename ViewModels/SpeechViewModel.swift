@@ -1,6 +1,7 @@
 import Foundation
 import Speech
 import AVFoundation
+import SwiftUI
 
 final class SpeechViewModel: NSObject, ObservableObject {
     @Published var recognizedText: String = ""
@@ -8,6 +9,8 @@ final class SpeechViewModel: NSObject, ObservableObject {
     @Published var finalText: String = ""
     @Published var partialText: String = ""
     @Published var isFileTranscribing: Bool = false
+    
+    @Published var audioLevel: CGFloat = 0.0
 
     
     private let audioEngine = AVAudioEngine()
@@ -46,6 +49,7 @@ final class SpeechViewModel: NSObject, ObservableObject {
         recognizedText = ""
         finalText = ""
         partialText = ""
+        audioLevel = 0.0
     }
     
     // MARK: - マイク録音の文字起こし
@@ -69,6 +73,12 @@ final class SpeechViewModel: NSObject, ObservableObject {
         guard let recognitionRequest = recognitionRequest else { return }
         recognitionRequest.shouldReportPartialResults = true
         recognitionRequest.taskHint = .dictation
+        // 🔥 カスタム辞書を適用
+        let customWords = DataManager.shared.fetchCustomWords()
+        recognitionRequest.contextualStrings = customWords
+        print("辞書:", customWords)
+
+
         
         let inputNode = audioEngine.inputNode
         
@@ -104,8 +114,32 @@ final class SpeechViewModel: NSObject, ObservableObject {
         
         let recordingFormat = inputNode.outputFormat(forBus: 0)
         inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
+            // 文字起こし用にバッファを渡す
             self.recognitionRequest?.append(buffer)
+
+            // ===== 音量レベルの計算 =====
+            guard let channelData = buffer.floatChannelData?[0] else { return }
+            let frameLength = Int(buffer.frameLength)
+
+            var sum: Float = 0.0
+            for i in 0..<frameLength {
+                let sample = channelData[i]
+                sum += sample * sample
+            }
+            let rms = sqrt(sum / Float(frameLength))
+
+            // dB に変換（小さい値を扱いやすくする）
+            let avgPower = 20 * log10(rms + 1e-8)
+
+            // -50dB〜0dB を 0〜1 に正規化
+            let normalized = max(0, min(1, (avgPower + 50) / 50))
+
+            DispatchQueue.main.async {
+                self.audioLevel = CGFloat(normalized)
+            }
+            // ===== 音量レベルの計算ここまで =====
         }
+
         
         audioEngine.prepare()
         do {
@@ -123,6 +157,7 @@ final class SpeechViewModel: NSObject, ObservableObject {
         audioEngine.inputNode.removeTap(onBus: 0)
         recognitionRequest?.endAudio()
         isRecording = false
+        audioLevel = 0.0
     }
     
     // MARK: - ファイル文字起こし
@@ -150,7 +185,14 @@ final class SpeechViewModel: NSObject, ObservableObject {
         // URL 用のリクエスト
         let request = SFSpeechURLRecognitionRequest(url: url)
         request.shouldReportPartialResults = true       // ★ 途中経過も欲しい
-        request.taskHint = .dictation                   // ★ メモ用ヒント
+        request.taskHint = .dictation
+        
+        // 🔥 カスタム辞書を適用
+        let customWords = DataManager.shared.fetchCustomWords()
+        request.contextualStrings = customWords
+        print("辞書:", customWords)
+
+// ★ メモ用ヒント
 
         recognitionTask = speechRecognizer?.recognitionTask(with: request) { result, error in
             if let result = result {

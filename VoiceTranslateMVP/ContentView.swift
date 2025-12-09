@@ -1,10 +1,11 @@
 import SwiftUI
-import UniformTypeIdentifiers   // ファイル選択に必要
+import UniformTypeIdentifiers
 
 struct ContentView: View {
     @StateObject private var viewModel = SpeechViewModel()
     @State private var showingFileImporter = false
-    
+    @State private var showSettings = false
+
     var body: some View {
         NavigationView {
             VStack(spacing: 16) {
@@ -14,12 +15,9 @@ struct ContentView: View {
                     .bold()
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.top, 24)
-                
-                // メモ欄（partial + final）
-                // メモ欄（partial + final）
-                // メモ欄（partial + final）
-                VStack(alignment: .leading, spacing: 8) {
 
+                // メモ欄
+                VStack(alignment: .leading, spacing: 8) {
                     if viewModel.finalText.isEmpty && viewModel.partialText.isEmpty {
                         Text("ここに文字起こし結果が表示されます")
                             .foregroundColor(.secondary)
@@ -34,24 +32,21 @@ struct ContentView: View {
                         Text(viewModel.partialText)
                             .foregroundColor(
                                 viewModel.isFileTranscribing
-                                ? .secondary   // ← ファイル読み込み中はグレー
-                                : .primary     // ← 録音中は黒
+                                ? .secondary
+                                : .primary
                             )
                     }
                 }
-                .padding(12)                                  // ← VStack にかかる
+                .padding(12)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
                         .fill(Color(.secondarySystemBackground))
                 )
 
-
-
-
                 Spacer()
-                
-                // テキストがある & 録音していないときだけ表示
+
+                // コピー／共有ボタン
                 if !viewModel.recognizedText.isEmpty && !viewModel.isRecording {
                     HStack {
                         Button("クリア") {
@@ -69,8 +64,13 @@ struct ContentView: View {
                     .buttonStyle(.bordered)
                 }
 
-                // 録音ボタン + ファイル読み込みボタン
+                // 波形 + 録音ボタン + ファイルボタン
                 HStack(spacing: 12) {
+                    RecordingWaveView(
+                        level: viewModel.audioLevel,
+                        isRecording: viewModel.isRecording
+                    )
+
                     Button(action: {
                         viewModel.toggleRecording()
                     }) {
@@ -81,7 +81,7 @@ struct ContentView: View {
                             .foregroundColor(.white)
                             .cornerRadius(8)
                     }
-                    
+
                     Button {
                         showingFileImporter = true
                     } label: {
@@ -92,6 +92,8 @@ struct ContentView: View {
                             .foregroundColor(.primary)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
+                    .disabled(viewModel.isRecording)    // ← 🔥 これだけ追加！
+                    .opacity(viewModel.isRecording ? 0.4 : 1.0)
                 }
             }
             .padding()
@@ -110,6 +112,22 @@ struct ContentView: View {
                     }
                 case .failure(let error):
                     print("ファイル選択エラー:", error.localizedDescription)
+                }
+            }
+            // ここからが設定ボタン＆シート
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showSettings = true
+                    } label: {                       // ← label: を付ける
+                        Image(systemName: "gearshape")
+                    }
+                }
+            }
+
+            .sheet(isPresented: $showSettings) {
+                NavigationView {
+                    SettingsView()
                 }
             }
         }
