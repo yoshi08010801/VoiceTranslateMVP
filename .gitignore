@@ -19,3 +19,7 @@ build/
 .swiftpm/
 Packages/
 
+
+# Xcode user data
+*.xcuserstate
+xcuserdata/
