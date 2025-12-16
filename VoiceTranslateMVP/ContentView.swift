@@ -1,10 +1,13 @@
 import SwiftUI
 import UniformTypeIdentifiers
+import SwiftData
 
 struct ContentView: View {
     @StateObject private var viewModel = SpeechViewModel()
     @State private var showingFileImporter = false
     @State private var showSettings = false
+    
+    @Environment(\.modelContext) private var modelContext // ✅追加
 
     var body: some View {
         NavigationView {
@@ -96,9 +99,19 @@ struct ContentView: View {
                     .opacity(viewModel.isRecording ? 0.4 : 1.0)
                 }
             }
+            
             .padding()
             .onAppear {
                 viewModel.requestAuthorization()
+
+                viewModel.onFinalText = { final in
+                    let trimmed = final.trimmingCharacters(in: .whitespacesAndNewlines)
+                    guard !trimmed.isEmpty else { return }
+
+                    let item = TranscriptItem(title: "", text: trimmed, tagsCSV: "")
+                    modelContext.insert(item)
+                    try? modelContext.save()
+                }
             }
             .fileImporter(
                 isPresented: $showingFileImporter,
@@ -114,16 +127,27 @@ struct ContentView: View {
                     print("ファイル選択エラー:", error.localizedDescription)
                 }
             }
+
             // ここからが設定ボタン＆シート
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+
+                    // ✅ 履歴ボタン（保存できてるか確認用）
+                    NavigationLink {
+                        TranscriptListView()
+                    } label: {
+                        Image(systemName: "list.bullet")
+                    }
+
+                    // 設定ボタン（既存）
                     Button {
                         showSettings = true
-                    } label: {                       // ← label: を付ける
+                    } label: {
                         Image(systemName: "gearshape")
                     }
                 }
             }
+
 
             .sheet(isPresented: $showSettings) {
                 NavigationView {

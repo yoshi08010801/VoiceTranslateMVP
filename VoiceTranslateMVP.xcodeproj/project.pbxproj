@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		921E2FA72EF1733C00FDFDE7 /* TranscriptItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 921E2FA62EF1733C00FDFDE7 /* TranscriptItem.swift */; };
+		921E2FA92EF1745800FDFDE7 /* TranscriptListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 921E2FA82EF1745800FDFDE7 /* TranscriptListView.swift */; };
 		929B2FF42EE847F000DD3B3E /* SpeechViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 929B2FF32EE847F000DD3B3E /* SpeechViewModel.swift */; };
 		929B2FF62EE85ED100DD3B3E /* RecordingWaveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 929B2FF52EE85ED100DD3B3E /* RecordingWaveView.swift */; };
 		929B2FFE2EE86C3F00DD3B3E /* CustomDictionaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 929B2FFD2EE86C3F00DD3B3E /* CustomDictionaryView.swift */; };
@@ -31,6 +33,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		921E2FA62EF1733C00FDFDE7 /* TranscriptItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptItem.swift; sourceTree = "<group>"; };
+		921E2FA82EF1745800FDFDE7 /* TranscriptListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptListView.swift; sourceTree = "<group>"; };
 		929B2F802EE30AEB00DD3B3E /* VoiceTranslateMVP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoiceTranslateMVP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		929B2F8D2EE30AED00DD3B3E /* VoiceTranslateMVPTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceTranslateMVPTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		929B2F972EE30AED00DD3B3E /* VoiceTranslateMVPUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceTranslateMVPUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,6 +106,8 @@
 				929B2FFF2EE873A300DD3B3E /* ThemeSettingsView.swift */,
 				929B2FFD2EE86C3F00DD3B3E /* CustomDictionaryView.swift */,
 				929B2FF52EE85ED100DD3B3E /* RecordingWaveView.swift */,
+				921E2FA82EF1745800FDFDE7 /* TranscriptListView.swift */,
+				921E2FA62EF1733C00FDFDE7 /* TranscriptItem.swift */,
 				929B2FF12EE8479C00DD3B3E /* ViewModels */,
 				929B2F822EE30AEB00DD3B3E /* VoiceTranslateMVP */,
 				929B2F902EE30AED00DD3B3E /* VoiceTranslateMVPTests */,
@@ -272,9 +278,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				921E2FA72EF1733C00FDFDE7 /* TranscriptItem.swift in Sources */,
 				929B30002EE873A300DD3B3E /* ThemeSettingsView.swift in Sources */,
 				929B2FF62EE85ED100DD3B3E /* RecordingWaveView.swift in Sources */,
 				929B2FF42EE847F000DD3B3E /* SpeechViewModel.swift in Sources */,
+				921E2FA92EF1745800FDFDE7 /* TranscriptListView.swift in Sources */,
 				929B2FFE2EE86C3F00DD3B3E /* CustomDictionaryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

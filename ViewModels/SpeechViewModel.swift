@@ -11,6 +11,9 @@ final class SpeechViewModel: NSObject, ObservableObject {
     @Published var isFileTranscribing: Bool = false
     
     @Published var audioLevel: CGFloat = 0.0
+    
+    var onFinalText: ((String) -> Void)?
+
 
     
     private let audioEngine = AVAudioEngine()
@@ -91,6 +94,8 @@ final class SpeechViewModel: NSObject, ObservableObject {
                         self.finalText = text.trimmingCharacters(in: .whitespacesAndNewlines)
                         self.partialText = ""
                         self.recognizedText = self.finalText
+                        
+                        self.onFinalText?(self.finalText) // ✅ここ
                     }
                 }
  else {
@@ -204,6 +209,9 @@ final class SpeechViewModel: NSObject, ObservableObject {
                         self.finalText = text.trimmingCharacters(in: .whitespacesAndNewlines)
                         self.partialText = ""
                         self.recognizedText = self.finalText
+                        
+                        self.onFinalText?(self.finalText)
+
                     }
                 }
  else {

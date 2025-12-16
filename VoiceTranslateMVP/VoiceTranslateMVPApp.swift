@@ -1,15 +1,8 @@
-//
-//  VoiceTranslateMVPApp.swift
-//  VoiceTranslateMVP
-//
-//  Created by k on 2025/12/05.
-//
-
 import SwiftUI
+import SwiftData
 
 @main
 struct VoiceTranslateMVPApp: App {
-
     @AppStorage("appTheme") private var appTheme: String = "system"
 
     var body: some Scene {
@@ -20,5 +13,7 @@ struct VoiceTranslateMVPApp: App {
                     appTheme == "dark" ? .dark : nil
                 )
         }
+        .modelContainer(for: [TranscriptItem.self]) // ✅これ必須
     }
 }
+
