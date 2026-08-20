@@ -6,8 +6,8 @@ struct ContentView: View {
     @StateObject private var viewModel = SpeechViewModel()
     @State private var showingFileImporter = false
     @State private var showSettings = false
-    
-    @Environment(\.modelContext) private var modelContext // ✅追加
+
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         NavigationView {
@@ -95,11 +95,10 @@ struct ContentView: View {
                             .foregroundColor(.primary)
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
-                    .disabled(viewModel.isRecording)    // ← 🔥 これだけ追加！
+                    .disabled(viewModel.isRecording)
                     .opacity(viewModel.isRecording ? 0.4 : 1.0)
                 }
             }
-            
             .padding()
             .onAppear {
                 viewModel.requestAuthorization()
@@ -123,23 +122,21 @@ struct ContentView: View {
                     if let url = urls.first {
                         viewModel.transcribeFile(from: url)
                     }
+
                 case .failure(let error):
                     print("ファイル選択エラー:", error.localizedDescription)
                 }
             }
-
-            // ここからが設定ボタン＆シート
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-
-                    // ✅ 履歴ボタン（保存できてるか確認用）
+                    // 履歴画面
                     NavigationLink {
                         TranscriptListView()
                     } label: {
                         Image(systemName: "list.bullet")
                     }
 
-                    // 設定ボタン（既存）
+                    // 設定画面
                     Button {
                         showSettings = true
                     } label: {
@@ -147,8 +144,6 @@ struct ContentView: View {
                     }
                 }
             }
-
-
             .sheet(isPresented: $showSettings) {
                 NavigationView {
                     SettingsView()
@@ -157,4 +152,3 @@ struct ContentView: View {
         }
     }
 }
-
