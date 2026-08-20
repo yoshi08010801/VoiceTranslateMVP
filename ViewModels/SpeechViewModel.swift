@@ -14,7 +14,10 @@ final class SpeechViewModel: NSObject, ObservableObject {
     var onFinalText: ((String) -> Void)?
 
     private let audioEngine = AVAudioEngine()
-    private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "ja-JP"))
+    private let speechRecognizer = SFSpeechRecognizer(
+        locale: Locale(identifier: "ja-JP")
+    )
+
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
 
@@ -28,7 +31,8 @@ final class SpeechViewModel: NSObject, ObservableObject {
                     print("Speech authorized")
 
                 case .denied, .restricted, .notDetermined:
-                    self.recognizedText = "音声認識の権限がありません。設定から許可してください。"
+                    self.recognizedText =
+                        "音声認識の権限がありません。設定から許可してください。"
 
                 @unknown default:
                     break
@@ -54,6 +58,28 @@ final class SpeechViewModel: NSObject, ObservableObject {
         audioLevel = 0.0
     }
 
+    // MARK: - 認識結果の更新
+
+    private func updateRecognitionResult(
+        text: String,
+        isFinal: Bool
+    ) {
+        DispatchQueue.main.async {
+            if isFinal {
+                self.finalText = text.trimmingCharacters(
+                    in: .whitespacesAndNewlines
+                )
+                self.partialText = ""
+                self.recognizedText = self.finalText
+                self.onFinalText?(self.finalText)
+            } else {
+                self.partialText = text
+                self.recognizedText =
+                    self.finalText + self.partialText
+            }
+        }
+    }
+
     // MARK: - マイク録音の文字起こし
 
     private func startRecording() {
@@ -70,6 +96,7 @@ final class SpeechViewModel: NSObject, ObservableObject {
                 mode: .measurement,
                 options: .duckOthers
             )
+
             try audioSession.setActive(
                 true,
                 options: .notifyOthersOnDeactivation
@@ -79,7 +106,8 @@ final class SpeechViewModel: NSObject, ObservableObject {
             return
         }
 
-        recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
+        recognitionRequest =
+            SFSpeechAudioBufferRecognitionRequest()
 
         guard let recognitionRequest = recognitionRequest else {
             return
@@ -89,50 +117,47 @@ final class SpeechViewModel: NSObject, ObservableObject {
         recognitionRequest.taskHint = .dictation
 
         // カスタム辞書を音声認識に適用
-        let customWords = DataManager.shared.fetchCustomWords()
+        let customWords =
+            DataManager.shared.fetchCustomWords()
+
         recognitionRequest.contextualStrings = customWords
+
         print("辞書:", customWords)
 
         let inputNode = audioEngine.inputNode
 
-        recognitionTask = speechRecognizer?.recognitionTask(
-            with: recognitionRequest
-        ) { result, error in
+        recognitionTask =
+            speechRecognizer?.recognitionTask(
+                with: recognitionRequest
+            ) { result, error in
 
-            if let result = result {
-                let text = result.bestTranscription.formattedString
+                if let result = result {
+                    let text =
+                        result.bestTranscription.formattedString
 
-                if result.isFinal {
+                    self.updateRecognitionResult(
+                        text: text,
+                        isFinal: result.isFinal
+                    )
+                }
+
+                if error != nil ||
+                    (result?.isFinal ?? false) {
+
+                    self.audioEngine.stop()
+                    inputNode.removeTap(onBus: 0)
+
                     DispatchQueue.main.async {
-                        self.finalText = text.trimmingCharacters(
-                            in: .whitespacesAndNewlines
-                        )
-                        self.partialText = ""
-                        self.recognizedText = self.finalText
-                        self.onFinalText?(self.finalText)
+                        self.isRecording = false
                     }
-                } else {
-                    DispatchQueue.main.async {
-                        self.partialText = text
-                        self.recognizedText = self.finalText + self.partialText
-                    }
+
+                    self.recognitionRequest = nil
+                    self.recognitionTask = nil
                 }
             }
 
-            if error != nil || (result?.isFinal ?? false) {
-                self.audioEngine.stop()
-                inputNode.removeTap(onBus: 0)
-
-                DispatchQueue.main.async {
-                    self.isRecording = false
-                }
-
-                self.recognitionRequest = nil
-                self.recognitionTask = nil
-            }
-        }
-
-        let recordingFormat = inputNode.outputFormat(forBus: 0)
+        let recordingFormat =
+            inputNode.outputFormat(forBus: 0)
 
         inputNode.installTap(
             onBus: 0,
@@ -144,11 +169,15 @@ final class SpeechViewModel: NSObject, ObservableObject {
             self.recognitionRequest?.append(buffer)
 
             // 音量レベルを算出
-            guard let channelData = buffer.floatChannelData?[0] else {
+            guard
+                let channelData =
+                    buffer.floatChannelData?[0]
+            else {
                 return
             }
 
-            let frameLength = Int(buffer.frameLength)
+            let frameLength =
+                Int(buffer.frameLength)
 
             var sum: Float = 0.0
 
@@ -157,19 +186,25 @@ final class SpeechViewModel: NSObject, ObservableObject {
                 sum += sample * sample
             }
 
-            let rms = sqrt(sum / Float(frameLength))
+            let rms =
+                sqrt(sum / Float(frameLength))
 
             // RMS値をdBへ変換
-            let avgPower = 20 * log10(rms + 1e-8)
+            let avgPower =
+                20 * log10(rms + 1e-8)
 
             // -50dB〜0dBを0〜1へ正規化
             let normalized = max(
                 0,
-                min(1, (avgPower + 50) / 50)
+                min(
+                    1,
+                    (avgPower + 50) / 50
+                )
             )
 
             DispatchQueue.main.async {
-                self.audioLevel = CGFloat(normalized)
+                self.audioLevel =
+                    CGFloat(normalized)
             }
         }
 
@@ -182,7 +217,9 @@ final class SpeechViewModel: NSObject, ObservableObject {
                 self.isRecording = true
             }
         } catch {
-            print("audioEngine couldn't start: \(error)")
+            print(
+                "audioEngine couldn't start: \(error)"
+            )
         }
     }
 
@@ -199,6 +236,7 @@ final class SpeechViewModel: NSObject, ObservableObject {
 
     func transcribeFile(from url: URL) {
         isFileTranscribing = true
+
         print("拡張子:", url.pathExtension)
 
         if isRecording {
@@ -212,60 +250,65 @@ final class SpeechViewModel: NSObject, ObservableObject {
         recognitionTask = nil
 
         // ファイルインポートで取得したURLへのアクセスを開始
-        let accessing = url.startAccessingSecurityScopedResource()
+        let accessing =
+            url.startAccessingSecurityScopedResource()
 
-        print("ファイル文字起こし開始: \(url.lastPathComponent)")
+        print(
+            "ファイル文字起こし開始:",
+            url.lastPathComponent
+        )
 
-        let request = SFSpeechURLRecognitionRequest(url: url)
+        let request =
+            SFSpeechURLRecognitionRequest(url: url)
+
         request.shouldReportPartialResults = true
         request.taskHint = .dictation
 
         // カスタム辞書をファイル文字起こしにも適用
-        let customWords = DataManager.shared.fetchCustomWords()
+        let customWords =
+            DataManager.shared.fetchCustomWords()
+
         request.contextualStrings = customWords
+
         print("辞書:", customWords)
 
-        recognitionTask = speechRecognizer?.recognitionTask(
-            with: request
-        ) { result, error in
+        recognitionTask =
+            speechRecognizer?.recognitionTask(
+                with: request
+            ) { result, error in
 
-            if let result = result {
-                let text = result.bestTranscription.formattedString
+                if let result = result {
+                    let text =
+                        result.bestTranscription.formattedString
 
-                if result.isFinal {
+                    self.updateRecognitionResult(
+                        text: text,
+                        isFinal: result.isFinal
+                    )
+                }
+
+                if let error = error {
+                    print(
+                        "認識エラー:",
+                        error.localizedDescription
+                    )
+                }
+
+                if error != nil ||
+                    (result?.isFinal ?? false) {
+
                     DispatchQueue.main.async {
-                        self.finalText = text.trimmingCharacters(
-                            in: .whitespacesAndNewlines
-                        )
-                        self.partialText = ""
-                        self.recognizedText = self.finalText
-                        self.onFinalText?(self.finalText)
+                        self.isFileTranscribing = false
                     }
-                } else {
-                    DispatchQueue.main.async {
-                        self.partialText = text
-                        self.recognizedText = self.finalText + self.partialText
+
+                    print("ファイル文字起こし終了")
+
+                    self.recognitionTask = nil
+
+                    if accessing {
+                        url.stopAccessingSecurityScopedResource()
                     }
                 }
             }
-
-            if let error = error {
-                print("認識エラー:", error.localizedDescription)
-            }
-
-            if error != nil || (result?.isFinal ?? false) {
-                DispatchQueue.main.async {
-                    self.isFileTranscribing = false
-                }
-
-                print("ファイル文字起こし終了")
-
-                self.recognitionTask = nil
-
-                if accessing {
-                    url.stopAccessingSecurityScopedResource()
-                }
-            }
-        }
     }
 }
